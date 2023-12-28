@@ -5,7 +5,6 @@
 - [DSA Codex](#dsa-codex)
   - [TOC](#toc)
   - [About the Project](#about-the-project)
-    - [Built With](#built-with)
   - [Algorithms](#algorithms)
     - [Sorting Algorithms](#sorting-algorithms)
     - [Search Algorithms](#search-algorithms)
@@ -14,7 +13,6 @@
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
-  - [Contact](#contact)
 
 ## About the Project
 
