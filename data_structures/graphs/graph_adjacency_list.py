@@ -1,3 +1,19 @@
+class InvalidNeighborError(Exception):
+    pass
+
+
+class SelfLoopError(Exception):
+    pass
+
+
+class RepeatedEdgeError(Exception):
+    pass
+
+
+class MissingEdgeError(Exception):
+    pass
+
+
 class GraphList:
     """
     A class to represent a graph using an adjacency list.
@@ -48,12 +64,14 @@ class GraphList:
 
     def add_edge(self, node1: int, node2: int, is_directed: bool, weight: int = 1):
         """
-        Adds an edge between node1 and node2. If directed is False, an edge is also added from node2 to node1.
+        Adds an edge between node1 and node2. If directed is False, an
+        edge is also added from node2 to node1.
 
         Parameters:
         node1 (int): The first node of the edge.
         node2 (int): The second node of the edge.
-        directed (bool): If True, the edge is directed from node1 to node2. If False, an additional edge is added from node2 to node1.
+        directed (bool): If True, the edge is directed from node1 to node2.
+        If False, an additional edge is added from node2 to node1.
         weight (int): The weight of the edge. Defaults to 1.
         """
         self.add_node(node1)
@@ -94,3 +112,37 @@ class GraphList:
                 # if graph is undirected, entries will already be duplicated, so assume directed
                 matrix.add_edge(edge, neighbor[0], True, neighbor[1])
         return matrix
+
+    def get_neighbors_of_vip_nodes(self, vip_nodes: list[int]):
+        is_neighbor = [False for _ in range(self.n)]
+        for vip in vip_nodes:
+            for nbr in self.graph[vip]:
+                is_neighbor[nbr[0]] = True
+        return [i for i in range(self.n) if is_neighbor[i]]
+
+    @staticmethod
+    def is_well_formed_undirected(graph: dict[int, list[tuple[int, int]]]) -> bool:
+        """
+        Returns True if the given graph is well-formed.
+
+        Parameters:
+        graph (dict[int, list[tuple[int, int]]]): The graph to be checked.
+
+        Returns:
+        bool: True if the given graph is well-formed.
+        """
+        n = len(graph)
+        nbr_sets = [set(graph[node]) for node in range(n)]
+
+        for node in range(n):
+            # all neighbors are valid, no self loops, no repeated edges, all edges in both endpoints
+            for nbr, weight in graph[node]:
+                if nbr < 0 or nbr >= n:
+                    raise InvalidNeighborError(f"Invalid neighbor {nbr} for node {node}")
+                if node == nbr:
+                    raise SelfLoopError(f"Self loop detected at node {node}")
+                if graph[node].count((nbr, weight)) > 1:
+                    raise RepeatedEdgeError(f"Repeated edges detected at node {node}")
+                if (node, weight) not in nbr_sets[nbr]:
+                    raise MissingEdgeError(f"Missing edge detected at node {node}")
+        return True
