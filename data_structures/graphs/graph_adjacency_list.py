@@ -1,4 +1,4 @@
-class Graph:
+class GraphList:
     """
     A class to represent a graph using an adjacency list.
 
@@ -32,7 +32,7 @@ class Graph:
         n (int): The number of nodes in the graph.
         """
         self.n = n
-        self.graph: dict[int, tuple[int, int]] = {}
+        self.graph: dict[int, list[tuple[int, int]]] = {}
         for i in range(n):
             self.add_node(i)
 
@@ -60,8 +60,6 @@ class Graph:
         self.add_node(node2)
         self.graph[node1].append((node2, weight))
         if not is_directed:
-            if node2 not in self.graph:
-                self.graph[node2] = []
             self.graph[node2].append((node1, weight))
 
     def get_neighbors(self, n: int) -> list:
@@ -76,7 +74,7 @@ class Graph:
         """
         if n not in self.graph:
             return []
-        return self.graph[n]
+        return [neighbor[0] for neighbor in self.graph[n]]
 
     def print_graph(self):
         """
@@ -85,15 +83,14 @@ class Graph:
         for vertex in self.graph:
             print(vertex, "->", self.graph[vertex])
 
-
-# Driver code
-if __name__ == "__main__":
-    graph = Graph()
-    graph.add_edge(0, 1, True)
-    graph.add_edge(0, 4, True)
-    graph.add_edge(1, 2, True)
-    graph.add_edge(1, 3, True)
-    graph.add_edge(1, 4, True)
-    graph.add_edge(2, 3, True)
-    graph.add_edge(3, 4, True)
-    graph.print_graph()
+    def get_matrix(self):
+        """
+        Returns the graph as an adjacency matrix.
+        """
+        from data_structures.graphs.graph_adjacency_matrix import GraphMatrix
+        matrix = GraphMatrix(self.n)
+        for edge in self.graph:
+            for neighbor in self.graph[edge]:
+                # if graph is undirected, entries will already be duplicated, so assume directed
+                matrix.add_edge(edge, neighbor[0], True, neighbor[1])
+        return matrix

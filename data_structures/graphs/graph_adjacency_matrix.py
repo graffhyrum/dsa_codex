@@ -1,4 +1,4 @@
-class Graph:
+class GraphMatrix:
     """
     A class to represent a graph using an adjacency matrix. The graph is
     represented as a 2D list where the element at index [i][j] is 0 if there is
@@ -25,7 +25,7 @@ class Graph:
         Prints the graph.
     """
 
-    def __init__(self, n: int):
+    def __init__(self, n: int = 0):
         """
         Constructs a graph with n nodes and no edges.
 
@@ -99,15 +99,14 @@ class Graph:
         for row in range(self.n):
             print(f"{row}: {self.graph[row]}")
 
-
-# Driver code
-if __name__ == "__main__":
-    graph = Graph(5)
-    graph.add_edge(0, 1, True)
-    graph.add_edge(0, 4, True)
-    graph.add_edge(1, 2, True)
-    graph.add_edge(1, 3, True)
-    graph.add_edge(1, 4, True)
-    graph.add_edge(2, 3, True)
-    graph.add_edge(3, 4, True)
-    graph.print_graph()
+    def get_list(self):
+        """
+        Returns a graph represented as an adjacency list.
+        """
+        from data_structures.graphs.graph_adjacency_list import GraphList
+        graph_list = GraphList(self.n)
+        for row in range(self.n):
+            for col in range(self.n):
+                if self.graph[row][col] != 0:
+                    graph_list.add_edge(row, col, True, self.graph[row][col])
+        return graph_list
