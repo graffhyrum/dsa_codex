@@ -117,6 +117,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_twitter) - email
-
-Project Link: [https://github.com/graffhyrum/algorithms](https://github.com/graffhyrum/algorithms)
+Project Link: [https://github.com/graffhyrum/dsa_codex](https://github.com/graffhyrum/dsa_codex)
