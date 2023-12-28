@@ -42,11 +42,11 @@ class TestAdjacencyMatrix(unittest.TestCase):
         ])
 
     def test_add_vertex(self):
-        self.graph.add_vertex(0)
-        self.graph.add_vertex(1)
-        self.graph.add_vertex(2)
-        self.graph.add_vertex(3)
-        self.graph.add_vertex(4)
+        self.graph.add_node(0)
+        self.graph.add_node(1)
+        self.graph.add_node(2)
+        self.graph.add_node(3)
+        self.graph.add_node(4)
 
         self.assertEqual(self.graph.graph, [
             [0, 0, 0, 0, 0],
