@@ -1,4 +1,4 @@
-# A binary tree
+# A binary search tree
 
 class Node:
     def __init__(self, val):
