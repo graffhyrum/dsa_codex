@@ -85,13 +85,13 @@ To get a local copy up and running, follow these steps:
 1. Clone the repo
 
 ```bash
-git clone https://github.com/graffhyrum/algorithms.git
+git clone https://github.com/graffhyrum/dsa_codex.git
 ```
 
 2. Navigate to the project directory
 
 ```bash
-cd algorithms
+cd dsa_codex
 ```
 
 3. Run the tests
@@ -114,7 +114,3 @@ contributions you make are greatly appreciated.
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## Contact
-
-Project Link: [https://github.com/graffhyrum/dsa_codex](https://github.com/graffhyrum/dsa_codex)
