@@ -5,25 +5,25 @@ class Graph:
     def __init__(self):
         self.graph = {}
 
-    def add_vertex(self, u):
-        if u not in self.graph:
-            self.graph[u] = []
+    def add_node(self, n):
+        if n not in self.graph:
+            self.graph[n] = []
 
-    def add_edge(self, u, v, d):
-        if u not in self.graph:
-            self.add_vertex(u)
-        if v not in self.graph:
-            self.add_vertex(v)
-        self.graph[u].append(v)
-        if not d:
-            if v not in self.graph:
-                self.graph[v] = []
-            self.graph[v].append(u)
+    def add_edge(self, node1, node2, directed):
+        if node1 not in self.graph:
+            self.add_node(node1)
+        if node2 not in self.graph:
+            self.add_node(node2)
+        self.graph[node1].append(node2)
+        if not directed:
+            if node2 not in self.graph:
+                self.graph[node2] = []
+            self.graph[node2].append(node1)
 
-    def get_neighbors(self, u):
-        if u not in self.graph:
+    def get_neighbors(self, n):
+        if n not in self.graph:
             return []
-        return self.graph[u]
+        return self.graph[n]
 
     def print_graph(self):
         for vertex in self.graph:
