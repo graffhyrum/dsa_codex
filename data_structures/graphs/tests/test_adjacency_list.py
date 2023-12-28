@@ -23,7 +23,7 @@ class TestAdjacencyList(unittest.TestCase):
 
     def test_add_edge_directed(self):
         self.get_directed_graph()
-        self.assertEqual(self.graph.graph, self.directed_graph)
+        self.assertEqual(self.directed_graph, self.graph.graph)
 
     def test_add_edge_undirected(self):
         self.graph.add_edge(0, 1, False)
@@ -34,21 +34,21 @@ class TestAdjacencyList(unittest.TestCase):
         self.graph.add_edge(2, 3, False)
         self.graph.add_edge(3, 4, False)
 
-        self.assertEqual(self.graph.graph, self.undirected_graph)
+        self.assertEqual(self.undirected_graph, self.graph.graph)
 
     def test_add_node(self):
         for i in range(5):
             self.graph.add_node(i)
 
-        self.assertEqual(self.graph.graph, {i: [] for i in range(5)})
+        self.assertEqual({i: [] for i in range(5)}, self.graph.graph, )
 
     def test_get_neighbors(self):
         self.get_directed_graph()
-        self.assertEqual(self.graph.get_neighbors(0), [(1, 1), (4, 1)])
-        self.assertEqual(self.graph.get_neighbors(1), [(2, 1), (3, 1), (4, 1)])
-        self.assertEqual(self.graph.get_neighbors(2), [(3, 1)])
-        self.assertEqual(self.graph.get_neighbors(3), [(4, 1)])
-        self.assertEqual(self.graph.get_neighbors(4), [])
+        self.assertEqual([(1, 1), (4, 1)], self.graph.get_neighbors(0))
+        self.assertEqual([(2, 1), (3, 1), (4, 1)], self.graph.get_neighbors(1))
+        self.assertEqual([(3, 1)], self.graph.get_neighbors(2))
+        self.assertEqual([(4, 1)], self.graph.get_neighbors(3))
+        self.assertEqual([], self.graph.get_neighbors(4))
 
     def get_directed_graph(self):
         self.graph.add_edge(0, 1, True, 1)

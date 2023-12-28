@@ -8,8 +8,9 @@ class Graph:
     ----------
     n : int
         the number of nodes in the graph
-    graph : dict
-        a dictionary to store the graph where the keys are the nodes and the values are lists of adjacent nodes
+    graph : dict[int, tuple[int, int]]
+        a dictionary to store the graph where the keys are the nodes and
+        the values are lists of adjacent nodes, with weights
 
     Methods
     -------
@@ -23,7 +24,7 @@ class Graph:
         Prints the graph.
     """
 
-    def __init__(self, n):
+    def __init__(self, n: int = 0):
         """
         Constructs a graph with n nodes and no edges.
 
@@ -31,11 +32,11 @@ class Graph:
         n (int): The number of nodes in the graph.
         """
         self.n = n
-        self.graph = {}
+        self.graph: dict[int, tuple[int, int]] = {}
         for i in range(n):
-            self.graph[i] = []
+            self.add_node(i)
 
-    def add_node(self, value):
+    def add_node(self, value: int):
         """
         Adds a node with the given value to the graph.
 
@@ -45,7 +46,7 @@ class Graph:
         if value not in self.graph:
             self.graph[value] = []
 
-    def add_edge(self, node1, node2, is_directed, weight=1):
+    def add_edge(self, node1: int, node2: int, is_directed: bool, weight: int = 1):
         """
         Adds an edge between node1 and node2. If directed is False, an edge is also added from node2 to node1.
 
@@ -53,18 +54,17 @@ class Graph:
         node1 (int): The first node of the edge.
         node2 (int): The second node of the edge.
         directed (bool): If True, the edge is directed from node1 to node2. If False, an additional edge is added from node2 to node1.
+        weight (int): The weight of the edge. Defaults to 1.
         """
-        if node1 not in self.graph:
-            self.add_node(node1)
-        if node2 not in self.graph:
-            self.add_node(node2)
+        self.add_node(node1)
+        self.add_node(node2)
         self.graph[node1].append((node2, weight))
         if not is_directed:
             if node2 not in self.graph:
                 self.graph[node2] = []
             self.graph[node2].append((node1, weight))
 
-    def get_neighbors(self, n):
+    def get_neighbors(self, n: int) -> list:
         """
         Returns a list of nodes that are adjacent to the node n.
 

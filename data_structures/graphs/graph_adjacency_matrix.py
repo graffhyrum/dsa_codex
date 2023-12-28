@@ -1,15 +1,17 @@
 class Graph:
     """
-    A class to represent a graph using an adjacency matrix.
-
+    A class to represent a graph using an adjacency matrix. The graph is
+    represented as a 2D list where the element at index [i][j] is 0 if there is
+    no edge from node i to node j and w: int weight otherwise.
     ...
 
     Attributes
     ----------
     n : int
         the number of nodes in the graph
-    graph : list of  int
-        a 2D list to store the graph where the element at index [i][j] is 1 if there is an edge from node i to node j and 0 otherwise
+    graph : list[list[int]]
+        a 2D list where the element at index [i][j] is 0 if there is
+        no edge from node i to node j and w: int weight otherwise.
 
     Methods
     -------
@@ -23,7 +25,7 @@ class Graph:
         Prints the graph.
     """
 
-    def __init__(self, n):
+    def __init__(self, n: int):
         """
         Constructs a graph with n nodes and no edges.
 
@@ -31,7 +33,16 @@ class Graph:
         n (int): The number of nodes in the graph.
         """
         self.n = n
-        self.graph = [[0 for _ in range(n)] for _ in range(n)]
+        # self.graph = [[0 for _ in range(n)] for _ in range(n)]
+        self.graph: list[list[int]] = []
+        # add rows
+        for _ in range(n):
+            self.graph.append([])
+
+        # add columns
+        for row in self.graph:
+            for _ in range(n):
+                row.append(0)
 
     def add_node(self, value):
         """
@@ -41,8 +52,15 @@ class Graph:
         value (int): The value of the node to be added.
         """
         if value >= self.n:
-            return
-        self.graph[value] = [0 for _ in range(self.n)]
+            # add rows
+            for _ in range(self.n, value):
+                self.graph.append([
+                    0 for _ in range(self.n)
+                ])
+            # add columns
+            for row in self.graph:
+                for _ in range(self.n, value):
+                    row.append(0)
 
     def add_edge(self, node1, node2, is_directed, weight=1):
         """
@@ -52,9 +70,10 @@ class Graph:
         node1 (int): The first node of the edge.
         node2 (int): The second node of the edge.
         is_directed (bool): If True, the edge is directed from node1 to node2. If False, an additional edge is added from node2 to node1.
+        weight (int): The weight of the edge. Defaults to 1.
         """
-        if node1 >= self.n or node2 >= self.n:
-            return
+        self.add_node(node1)
+        self.add_node(node2)
         self.graph[node1][node2] = weight
         if not is_directed:
             self.graph[node2][node1] = weight
@@ -71,14 +90,14 @@ class Graph:
         """
         if n >= self.n:
             return []
-        return [v for v in range(self.n) if self.graph[n][v] == 1]
+        return [v for v in range(self.n) if self.graph[n][v] != 0]
 
     def print_graph(self):
         """
         Prints the graph.
         """
-        for row in self.graph:
-            print(row)
+        for row in range(self.n):
+            print(f"{row}: {self.graph[row]}")
 
 
 # Driver code
