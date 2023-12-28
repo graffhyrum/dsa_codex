@@ -7,18 +7,18 @@ class TestAdjacencyList(unittest.TestCase):
     def setUp(self):
         self.graph = Graph(5)
         self.directed_graph = {
-            0: [1, 4],
-            1: [2, 3, 4],
-            2: [3],
-            3: [4],
+            0: [(1, 1), (4, 1)],
+            1: [(2, 1), (3, 1), (4, 1)],
+            2: [(3, 1)],
+            3: [(4, 1)],
             4: []
         }
         self.undirected_graph = {
-            0: [1, 4],
-            1: [0, 2, 3, 4],
-            2: [1, 3],
-            3: [1, 2, 4],
-            4: [0, 1, 3]
+            0: [(1, 1), (4, 1)],
+            1: [(0, 1), (2, 1), (3, 1), (4, 1)],
+            2: [(1, 1), (3, 1)],
+            3: [(1, 1), (2, 1), (4, 1)],
+            4: [(0, 1), (1, 1), (3, 1)]
         }
 
     def test_add_edge_directed(self):
@@ -44,20 +44,20 @@ class TestAdjacencyList(unittest.TestCase):
 
     def test_get_neighbors(self):
         self.get_directed_graph()
-        self.assertEqual(self.graph.get_neighbors(0), [1, 4])
-        self.assertEqual(self.graph.get_neighbors(1), [2, 3, 4])
-        self.assertEqual(self.graph.get_neighbors(2), [3])
-        self.assertEqual(self.graph.get_neighbors(3), [4])
+        self.assertEqual(self.graph.get_neighbors(0), [(1, 1), (4, 1)])
+        self.assertEqual(self.graph.get_neighbors(1), [(2, 1), (3, 1), (4, 1)])
+        self.assertEqual(self.graph.get_neighbors(2), [(3, 1)])
+        self.assertEqual(self.graph.get_neighbors(3), [(4, 1)])
         self.assertEqual(self.graph.get_neighbors(4), [])
 
     def get_directed_graph(self):
-        self.graph.add_edge(0, 1, True)
-        self.graph.add_edge(0, 4, True)
-        self.graph.add_edge(1, 2, True)
-        self.graph.add_edge(1, 3, True)
-        self.graph.add_edge(1, 4, True)
-        self.graph.add_edge(2, 3, True)
-        self.graph.add_edge(3, 4, True)
+        self.graph.add_edge(0, 1, True, 1)
+        self.graph.add_edge(0, 4, True, 1)
+        self.graph.add_edge(1, 2, True, 1)
+        self.graph.add_edge(1, 3, True, 1)
+        self.graph.add_edge(1, 4, True, 1)
+        self.graph.add_edge(2, 3, True, 1)
+        self.graph.add_edge(3, 4, True, 1)
 
 
 if __name__ == "__main__":

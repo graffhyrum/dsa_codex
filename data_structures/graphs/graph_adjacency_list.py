@@ -45,7 +45,7 @@ class Graph:
         if value not in self.graph:
             self.graph[value] = []
 
-    def add_edge(self, node1, node2, is_directed):
+    def add_edge(self, node1, node2, is_directed, weight=1):
         """
         Adds an edge between node1 and node2. If directed is False, an edge is also added from node2 to node1.
 
@@ -58,11 +58,11 @@ class Graph:
             self.add_node(node1)
         if node2 not in self.graph:
             self.add_node(node2)
-        self.graph[node1].append(node2)
+        self.graph[node1].append((node2, weight))
         if not is_directed:
             if node2 not in self.graph:
                 self.graph[node2] = []
-            self.graph[node2].append(node1)
+            self.graph[node2].append((node1, weight))
 
     def get_neighbors(self, n):
         """

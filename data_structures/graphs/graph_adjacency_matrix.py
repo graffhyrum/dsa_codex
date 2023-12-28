@@ -44,7 +44,7 @@ class Graph:
             return
         self.graph[value] = [0 for _ in range(self.n)]
 
-    def add_edge(self, node1, node2, is_directed):
+    def add_edge(self, node1, node2, is_directed, weight=1):
         """
         Adds an edge from node1 to node2. If is_directed is False, an edge is also added from node2 to node1.
 
@@ -55,9 +55,9 @@ class Graph:
         """
         if node1 >= self.n or node2 >= self.n:
             return
-        self.graph[node1][node2] = 1
+        self.graph[node1][node2] = weight
         if not is_directed:
-            self.graph[node2][node1] = 1
+            self.graph[node2][node1] = weight
 
     def get_neighbors(self, n):
         """
