@@ -67,10 +67,10 @@ contains the necessary methods.
 
 ### [Graphs](./data_structures/graphs)
 
-- [Adjacency List](./data_structures/graphs/graph_adjacency_list.py): This is a graph data structure that uses a list of
+- [Adjacency List](./data_structures/graphs/graph_adjacency_list_weighed.py): This is a graph data structure that uses a list of
   lists to represent the edges in the graph. Each vertex in the graph is represented by an index in the list. The
   elements in the list at that index are the vertices that are connected to the vertex at that index.
-- [Adjacency Matrix](./data_structures/graphs/graph_adjacency_matrix.py): This is a graph data structure that uses a matrix
+- [Adjacency Matrix](./data_structures/graphs/graph_adjacency_matrix_weighted.py): This is a graph data structure that uses a matrix
   to represent the edges in the graph. Each vertex in the graph is represented by an index in the matrix. The elements
   in the matrix at that index are the vertices that are connected to the vertex at that index.
 

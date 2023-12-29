@@ -1,4 +1,4 @@
-from collections import deque
+import heapq
 
 from data_structures.graphs.graph_errors import (
     InvalidNeighborError,
@@ -6,10 +6,10 @@ from data_structures.graphs.graph_errors import (
     RepeatedEdgeError,
     MissingEdgeError
 )
+from data_structures.graphs.graph_adjacency_matrix_weighted import WeightedGraphMatrix
 
 
-
-class UnweightedGraphList:
+class WeightedGraphList:
     """
     A class to represent a graph using an adjacency list.
 
@@ -19,9 +19,9 @@ class UnweightedGraphList:
     ----------
     n : int
         the number of nodes in the graph
-    graph : dict[int, list[int]]
+    graph : dict[int, list[tuple[int, int]]]
         a dictionary to store the graph where the keys are the nodes and
-        the values are lists of adjacent nodes, without weights
+        the values are lists of adjacent nodes, with weights
 
     Methods
     -------
@@ -53,7 +53,7 @@ class UnweightedGraphList:
         n (int): The number of nodes in the graph.
         """
         self.n = n
-        self.graph: dict[int, list[int]] = {}
+        self.graph: dict[int, list[tuple[int, int]]] = {}
         for i in range(n):
             self.add_node(i)
 
@@ -67,7 +67,7 @@ class UnweightedGraphList:
         if value not in self.graph:
             self.graph[value] = []
 
-    def add_edge(self, node1: int, node2: int, is_directed: bool):
+    def add_edge(self, node1: int, node2: int, is_directed: bool, weight: int = 1):
         """
         Adds an edge between node1 and node2. If directed is False, an
         edge is also added from node2 to node1.
@@ -77,12 +77,13 @@ class UnweightedGraphList:
         node2 (int): The second node of the edge.
         directed (bool): If True, the edge is directed from node1 to node2.
         If False, an additional edge is added from node2 to node1.
+        weight (int): The weight of the edge. Defaults to 1.
         """
         self.add_node(node1)
         self.add_node(node2)
-        self.graph[node1].append(node2)
+        self.graph[node1].append((node2, weight))
         if not is_directed:
-            self.graph[node2].append(node1)
+            self.graph[node2].append((node1, weight))
 
     def get_neighbors(self, n: int) -> list:
         """
@@ -96,7 +97,7 @@ class UnweightedGraphList:
         """
         if n not in self.graph:
             return []
-        return self.graph[n]
+        return [neighbor[0] for neighbor in self.graph[n]]
 
     def print_graph(self):
         """
@@ -105,31 +106,32 @@ class UnweightedGraphList:
         for vertex in self.graph:
             print(vertex, "->", self.graph[vertex])
 
-    def get_matrix(self) -> 'UnweightedGraphMatrix':
+    def get_matrix(self) -> WeightedGraphMatrix:
         """
         Returns the graph as an adjacency matrix.
         """
-        from data_structures.graphs.graph_adjacency_matrix import UnweightedGraphMatrix
-        matrix = UnweightedGraphMatrix(self.n)
-        for node in self.graph:
-            for neighbor in self.graph[node]:
-                matrix.add_edge(node, neighbor, True)
+
+        matrix = WeightedGraphMatrix(self.n)
+        for edge in self.graph:
+            for neighbor in self.graph[edge]:
+                # if graph is undirected, entries will already be duplicated, so assume directed
+                matrix.add_edge(edge, neighbor[0], True, neighbor[1])
         return matrix
 
-    def get_neighbors_of_vip_nodes(self, vip_nodes: list) -> list[int]:
+    def get_neighbors_of_vip_nodes(self, vip_nodes: list[int]):
         is_neighbor = self.n * [False]
         for vip in vip_nodes:
             for nbr in self.graph[vip]:
-                is_neighbor[nbr] = True
+                is_neighbor[nbr[0]] = True
         return [i for i in range(self.n) if is_neighbor[i]]
 
     @staticmethod
-    def is_well_formed_undirected(graph: dict[int, list[int]]) -> bool:
+    def is_well_formed_undirected(graph: dict[int, list[tuple[int, int]]]) -> bool:
         """
         Returns True if the given graph is well-formed.
 
         Parameters:
-        graph (dict[int, list[int]]): The graph to be checked.
+        graph (dict[int, list[tuple[int, int]]]): The graph to be checked.
 
         Returns:
         bool: True if the given graph is well-formed.
@@ -138,44 +140,46 @@ class UnweightedGraphList:
         nbr_sets = [set(graph[node]) for node in range(n)]
 
         for node in range(n):
-            for nbr in graph[node]:
+            # all neighbors are valid, no self loops, no repeated edges, all edges in both endpoints
+            for nbr, weight in graph[node]:
                 if nbr < 0 or nbr >= n:
                     raise InvalidNeighborError(f"Invalid neighbor {nbr} for node {node}")
                 if node == nbr:
                     raise SelfLoopError(f"Self loop detected at node {node}")
-                if graph[node].count(nbr) > 1:
-                    raise RepeatedEdgeError(f"Repeated edge between {node} and {nbr}")
-                if node not in nbr_sets[nbr]:
-                    raise MissingEdgeError(f"Missing edge between {node} and {nbr}")
+                if graph[node].count((nbr, weight)) > 1:
+                    raise RepeatedEdgeError(f"Repeated edges detected at node {node}")
+                if (node, weight) not in nbr_sets[nbr]:
+                    raise MissingEdgeError(f"Missing edge detected at node {node}")
         return True
 
-    def reachable(self, start: int) -> list[int]:
+    def reachable(self, start: int) -> list:
         """
         Returns a list of nodes that are reachable from the given node.
 
         Parameters:
-        start (int): The node from which to start the search.
+        node (int): The node whose reachable nodes are to be returned.
 
         Returns:
-        list[int]: A list of nodes that are reachable from the given node.
+        list: A list of nodes that are reachable from the given node.
         """
         visited = self.n * [False]
-        reachable_nodes = []
+        visited[start] = True
+        self._reachable(start, visited)
+        return visited
 
-        def dfs(node: int):
-            visited[node] = True
-            reachable_nodes.append(node)
-            for nbr in self.graph[node]:
-                if not visited[nbr]:
-                    dfs(nbr)
-
-        dfs(start)
-        return reachable_nodes
+    def _reachable(self, node: int, visited: list[bool]):
+        """
+        Helper function for reachable.
+        """
+        for nbr in self.graph[node]:
+            if not visited[nbr]:
+                visited[nbr] = True
+                self._reachable(nbr, visited)
 
     def shortest_path(self, start: int, end: int) -> list[int]:
         """
         Returns the shortest path from the start node to the end node.
-        Uses BFS.
+        Uses Djikstra's algorithm.
 
         Parameters:
         start (int): The node from which the path starts.
@@ -186,15 +190,23 @@ class UnweightedGraphList:
         """
         visited = self.n * [False]
         prev = self.n * [None]
-        que = deque()
-        que.append(start)
-        while que:
-            node = que.popleft()
-            for nbr in self.graph[node]:
-                if not visited[nbr]:
-                    visited[nbr] = True
-                    prev[nbr] = node
-                    que.append(nbr)
+        Q = [(0, start)]
+        while Q:
+            (cost, node) = heapq.heappop(Q)
+            if visited[node]:
+                continue
+            visited[node] = True
+            if node == end:
+                break
+            for (next, c) in self.graph[node]:
+                if visited[next]:
+                    continue
+                old_cost = visited[next]
+                new_cost = cost + c
+                if new_cost < old_cost:
+                    visited[next] = new_cost
+                    prev[next] = node
+                    heapq.heappush(Q, (new_cost, next))
         path = []
         cur_node = end
         while cur_node is not None:

@@ -1,7 +1,4 @@
-from data_structures.graphs.graph_adjacency_list import UnweightedGraphList
-
-
-class UnweightedGraphMatrix:
+class WeightedGraphMatrix:
     """
     A class to represent a graph using an adjacency matrix. The graph is
     represented as a 2D list where the element at index [i][j] is 0 if there is
@@ -106,9 +103,10 @@ class UnweightedGraphMatrix:
         """
         Returns a graph represented as an adjacency list.
         """
-        graph_list = UnweightedGraphList(self.n)
+        from data_structures.graphs.graph_adjacency_list_weighed import WeightedGraphList
+        graph_list = WeightedGraphList(self.n)
         for row in range(self.n):
             for col in range(self.n):
                 if self.graph[row][col] != 0:
-                    graph_list.add_edge(row, col, True)
+                    graph_list.add_edge(row, col, True, self.graph[row][col])
         return graph_list

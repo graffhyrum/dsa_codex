@@ -1,13 +1,12 @@
 import unittest
-
-from data_structures.graphs.graph_adjacency_matrix import GraphMatrix
-from data_structures.graphs.graph_adjacency_list import GraphList
+from data_structures.graphs.graph_adjacency_list import UnweightedGraphList
+from data_structures.graphs.graph_adjacency_matrix import UnweightedGraphMatrix
 
 
 class TestAdjacencyMatrix(unittest.TestCase):
 
     def test_get_directed_list(self):
-        test_list = GraphList(3)
+        test_list = UnweightedGraphList(3)
         self.matrix.add_edge(0, 1, True)
         test_list.add_edge(0, 1, True)
         g = self.matrix.get_list()
@@ -15,7 +14,7 @@ class TestAdjacencyMatrix(unittest.TestCase):
         self.assertEqual(test_list.graph, g.graph)
 
     def test_get_undirected_list(self):
-        test_list = GraphList(3)
+        test_list = UnweightedGraphList(3)
         self.matrix.add_edge(0, 1, False)
         test_list.add_edge(0, 1, False)
         g = self.matrix.get_list()
@@ -23,7 +22,7 @@ class TestAdjacencyMatrix(unittest.TestCase):
         self.assertEqual(test_list.graph, g.graph)
 
     def setUp(self):
-        self.matrix = GraphMatrix(3)
+        self.matrix = (UnweightedGraphMatrix(3))
         self.directed_graph = [
             [0, 1, 0],
             [0, 0, 0],
